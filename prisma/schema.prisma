@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  username     String    @unique
+  reachedAllAt DateTime?
+  wantsToPlay  Boolean   @default(false)
+  teamId       String?   @unique
+  team         Team?     @relation(fields: [teamId], references: [id])
+  scans        Scan[]    @relation("Scanner")
+  scannedBy    Scan[]    @relation("Scanned")
+}
+
+model Scan {
+  id        String   @id @default(uuid())
+  scannerId String
+  scannedId String
+  scanner   User     @relation("Scanner", fields: [scannerId], references: [id])
+  scanned   User     @relation("Scanned", fields: [scannedId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Team {
+  id             String      @id @default(uuid())
+  users          User[]
+  tournamentId   String?
+  tournament     Tournament? @relation(fields: [tournamentId], references: [id])
+  matchesAsTeam1 Match[]     @relation("Team1")
+  matchesAsTeam2 Match[]     @relation("Team2")
+  matchesWon     Match[]     @relation("Winner")
+}
+
+model Tournament {
+  id       String  @id @default(uuid())
+  teams    Team[]
+  rounds   Round[]
+  isActive Boolean @default(true)
+}
+
+model Round {
+  id           String     @id @default(uuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  matches      Match[]
+  roundNumber  Int
+}
+
+model Match {
+  id              String  @id @default(uuid())
+  roundId         String
+  round           Round   @relation(fields: [roundId], references: [id])
+  team1Id         String
+  team1           Team    @relation("Team1", fields: [team1Id], references: [id])
+  team2Id         String
+  team2           Team    @relation("Team2", fields: [team2Id], references: [id])
+  winnerId        String?
+  winner          Team?   @relation("Winner", fields: [winnerId], references: [id])
+  nextMatchId     String?
+  nextMatch       Match?  @relation("NextMatch", fields: [nextMatchId], references: [id])
+  previousMatches Match[] @relation("NextMatch")
+}
