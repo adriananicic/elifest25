@@ -65,7 +65,7 @@ const ScanQRCodePage = () => {
       <div id="qr-scanner-container" style={{ width: "100%", height: "400px" }}>
         <Scanner
           onScan={(res) => {
-            alert("ALERTAN RES " + res);
+            alert("ALERTAN RES " + JSON.stringify(res));
             handleScan(res);
           }}
           onError={handleError}
