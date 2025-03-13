@@ -22,8 +22,8 @@ model Scan {
   id        String   @id @default(uuid())
   scannerId String
   scannedId String
-  scanner   User     @relation("Scanner", fields: [scannerId], references: [id])
-  scanned   User     @relation("Scanned", fields: [scannedId], references: [id])
+  scanner   User     @relation("Scanner", fields: [scannerId], references: [id], onDelete: Cascade)
+  scanned   User     @relation("Scanned", fields: [scannedId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 

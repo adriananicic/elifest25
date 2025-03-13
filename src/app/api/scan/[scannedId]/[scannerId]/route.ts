@@ -26,15 +26,41 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Prevent duplicate scans
+    const existingScan = await prisma.scan.findFirst({
+      where: { scannerId, scannedId },
+    });
+
+    if (existingScan) {
+      return NextResponse.json(
+        { error: "User has already been scanned" },
+        { status: 400 }
+      );
+    }
+
     // Create scan entry
-    const scan = await prisma.scan.create({
+    await prisma.scan.create({
       data: {
         scannerId,
         scannedId,
       },
     });
 
-    return NextResponse.json({ success: true, scan });
+    // Check if the user has scanned all others
+    const totalUsers = await prisma.user.count();
+    const scansMade = await prisma.scan.count({
+      where: { scannerId },
+    });
+
+    if (scansMade === totalUsers - 1) {
+      // If user scanned everyone else, update reachedAllAt timestamp
+      await prisma.user.update({
+        where: { id: scannerId },
+        data: { reachedAllAt: new Date() },
+      });
+    }
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error creating scan:", error);
     return NextResponse.json(

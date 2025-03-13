@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
 const ScanQRCodePage = () => {
@@ -35,13 +35,11 @@ const ScanQRCodePage = () => {
       const responseData = JSON.parse(text); // Manually parse JSON
 
       if (!response.ok) {
-        alert(responseData.error);
         throw new Error(responseData.error || "An error occurred.");
       }
 
       console.log("Scan successful!", responseData);
     } catch (err) {
-      alert(err);
       setError((err as Error).message || "Error while sending scan data.");
     }
   };
@@ -54,7 +52,6 @@ const ScanQRCodePage = () => {
       <div id="qr-scanner-container" style={{ width: "100%", height: "400px" }}>
         <Scanner
           onScan={(res) => {
-            alert(res[0].rawValue);
             handleScan(res[0].rawValue);
           }}
         />
