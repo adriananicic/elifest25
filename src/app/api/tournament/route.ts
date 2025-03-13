@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     for (let i = 0; i < numTeams * teamSize; i += teamSize) {
       const teamUsers = shuffledUsers.slice(i, i + teamSize);
       const team = await prisma.team.create({
-        data: { users: { connect: teamUsers.map((u) => ({ id: u.id })) } },
+        data: { users: { connect: teamUsers.map((u: any) => ({ id: u.id })) } },
       });
       teams.push(team);
     }
