@@ -19,7 +19,7 @@ const ScanQRCodePage = () => {
         return;
       }
 
-      alert("scanned: " + data.text + "and scanner: " + scannerId);
+      alert("scanned: " + data.text + " and scanner: " + scannerId);
       const scannedId = data.text; // ID of the scanned user
 
       console.log(data.text);
@@ -63,7 +63,7 @@ const ScanQRCodePage = () => {
 
       {/* Scanner Container with some styling */}
       <div id="qr-scanner-container" style={{ width: "100%", height: "400px" }}>
-        <Scanner onScan={handleScan} onError={handleError} />
+        <Scanner onScan={(res) => handleScan(res)} onError={handleError} />
       </div>
 
       {scanResult && <p>Scanned URL/ID: {scanResult}</p>}
