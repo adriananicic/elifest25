@@ -1,38 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { scannedId: string; scannerId: string } }
-) {
+export async function POST(req: NextRequest) {
   try {
-    const { scannedId, scannerId } = params;
+    // Extract data from request body instead of params
+    const { scannedId, scannerId } = await req.json();
 
-    console.log(params);
+    console.log("Received Data:", { scannedId, scannerId });
 
-    // Provjera ako oba korisnika postoje
+    if (!scannerId || !scannedId) {
+      return NextResponse.json(
+        { error: "Missing scannerId or scannedId" },
+        { status: 400 }
+      );
+    }
+
+    // Check if both users exist
     const scanner = await prisma.user.findUnique({ where: { id: scannerId } });
     const scanned = await prisma.user.findUnique({ where: { id: scannedId } });
 
     if (!scanner || !scanned) {
       return NextResponse.json(
-        { error: "Jedan ili oba korisnika nisu pronađena" },
+        { error: "One or both users not found" },
         { status: 404 }
       );
     }
 
-    // Kreiranje scan entiteta (konektiranje korisnika)
+    // Create scan entry
     const scan = await prisma.scan.create({
       data: {
-        scannerId, // povezivanje korisnika koji skenira
-        scannedId, // povezivanje korisnika kojeg je skenirao
-        // Ovdje se ne koristi `scanner` i `scanned` u obliku objekta, samo `connect`
+        scannerId,
+        scannedId,
       },
     });
 
     return NextResponse.json({ success: true, scan });
   } catch (error) {
-    console.error("Greška pri kreiranju skeniranja:", error);
-    return NextResponse.json({ error: "Interna greška" }, { status: 500 });
+    console.error("Error creating scan:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
