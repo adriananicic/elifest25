@@ -15,9 +15,8 @@ const ScanQRCodePage = () => {
     }
 
     try {
-      // Make the fetch call
-      const response = await fetch(`/api/scan`, {
-        method: "POST", // Assuming you're using POST, can change to GET if needed
+      const response = await fetch(`/api/scan/${scannedId}/${scannerId}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -27,7 +26,13 @@ const ScanQRCodePage = () => {
         }),
       });
 
-      const responseData = await response.json();
+      // Check if response is empty before parsing
+      const text = await response.text();
+      if (!text) {
+        throw new Error("Empty response from server.");
+      }
+
+      const responseData = JSON.parse(text); // Manually parse JSON
 
       if (!response.ok) {
         alert(responseData.error);
@@ -35,7 +40,6 @@ const ScanQRCodePage = () => {
       }
 
       console.log("Scan successful!", responseData);
-      // You can do further actions here like updating state
     } catch (err) {
       alert(err);
       setError((err as Error).message || "Error while sending scan data.");
