@@ -32,9 +32,7 @@ const MePage = () => {
       </h2>
 
       <div className="text-center mb-6">
-        {userId && (
-          <QRCodeSVG value={`localhost:3000/api/scan/${userId}`} size={200} />
-        )}
+        {userId && <QRCodeSVG value={`${userId}`} size={200} />}
       </div>
 
       <div className="flex justify-center">

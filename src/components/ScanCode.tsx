@@ -26,7 +26,7 @@ const ScanQRCodePage = () => {
 
       try {
         // Make the fetch call
-        const response = await fetch(`${scannedId}/${scannerId}`, {
+        const response = await fetch(`api/scan`, {
           method: "POST", // Assuming you're using POST, can change to GET if needed
           headers: {
             "Content-Type": "application/json",
@@ -65,8 +65,7 @@ const ScanQRCodePage = () => {
       <div id="qr-scanner-container" style={{ width: "100%", height: "400px" }}>
         <Scanner
           onScan={(res) => {
-            alert("ALERTAN RES " + JSON.stringify(res));
-            handleScan(res);
+            handleScan(res[0].rawValue);
           }}
           onError={handleError}
         />
