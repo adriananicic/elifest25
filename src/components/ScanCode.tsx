@@ -39,6 +39,8 @@ const ScanQRCodePage = () => {
 
       const scannedId = data.text; // ID of the scanned user
 
+      console.log(data.text);
+
       try {
         // Make the fetch call
         const response = await fetch(`${data.text}/${scannerId}`, {
@@ -55,12 +57,14 @@ const ScanQRCodePage = () => {
         const responseData = await response.json();
 
         if (!response.ok) {
+          console.log(responseData.error);
           throw new Error(responseData.error || "An error occurred.");
         }
 
         console.log("Scan successful!", responseData);
         // You can do further actions here like updating state
       } catch (err) {
+        console.log(err);
         setError((err as Error).message || "Error while sending scan data.");
       }
     }
