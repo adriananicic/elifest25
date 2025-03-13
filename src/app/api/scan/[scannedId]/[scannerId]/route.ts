@@ -8,6 +8,8 @@ export async function POST(
   try {
     const { scannedId, scannerId } = params;
 
+    console.log(params);
+
     // Provjera ako oba korisnika postoje
     const scanner = await prisma.user.findUnique({ where: { id: scannerId } });
     const scanned = await prisma.user.findUnique({ where: { id: scannedId } });

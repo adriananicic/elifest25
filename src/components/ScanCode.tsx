@@ -43,7 +43,7 @@ const ScanQRCodePage = () => {
 
       try {
         // Make the fetch call
-        const response = await fetch(`${data.text}/${scannerId}`, {
+        const response = await fetch(`${scannedId}/${scannerId}`, {
           method: "POST", // Assuming you're using POST, can change to GET if needed
           headers: {
             "Content-Type": "application/json",
