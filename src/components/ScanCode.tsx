@@ -5,24 +5,6 @@ const ScanQRCodePage = () => {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if camera permission is granted
-  useEffect(() => {
-    const checkCameraPermission = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        // If we reach this point, camera permission is granted
-        console.log("Camera permission granted");
-      } catch (err) {
-        console.error("Camera permission denied", err);
-        alert("Camera permission is required to scan QR codes.");
-      }
-    };
-
-    checkCameraPermission();
-  }, []);
-
   const handleScan = async (data: any) => {
     if (data) {
       setScanResult(data.text);
@@ -37,6 +19,7 @@ const ScanQRCodePage = () => {
         return;
       }
 
+      alert("scanned: " + data.text + "and scanner: " + scannerId);
       const scannedId = data.text; // ID of the scanned user
 
       console.log(data.text);
